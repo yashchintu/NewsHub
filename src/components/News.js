@@ -25,22 +25,27 @@ export class News extends Component {
         this.state = {
             articles: [],
             loading: true,
-            page: 1
+            page: 1,
+            totalResults: 0
         }
         document.title = `${this.capitalizeFirstLetter(this.props.category)} - NewsHub`;
     }
-
+// Data Fetching Funtion
     async updateNews() {
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=7608679f9040436dafc3a40f2c9c4f6c&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+        this.props.setProgress(10);
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         this.setState({ loading: true });
         let data = await fetch(url);
+        this.props.setProgress(30); //jesa h data fetch hoke aa jata h progress ko kar do 30
         let parsedData = await data.json()
         console.log(parsedData);
+        this.props.setProgress(70); //jesa h data Parse ho jata h progress ko kar do 70
         this.setState({
             articles: parsedData.articles,
             totalResults: parsedData.totalResults,
             loading: false
         })
+        this.props.setProgress(100);
     }
     async componentDidMount() {
         this.updateNews();
@@ -59,7 +64,7 @@ export class News extends Component {
 
     fetchMoreData = async () => {  
         this.setState({page: this.state.page + 1})
-        const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=7608679f9040436dafc3a40f2c9c4f6c&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+        const url =  `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let data = await fetch(url);
         let parsedData = await data.json()
         this.setState({
@@ -79,7 +84,7 @@ export class News extends Component {
                     hasMore={this.state.articles.length !== this.state.totalResults}
                     loader={<Spinner/>}
                 > 
-                    <div className="container">
+                    <div className="container"> {/* This will solve the problem of horizontal scroll bar */}
                          
                     <div className="row">
                         {this.state.articles.map((element) => {
