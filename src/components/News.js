@@ -32,10 +32,10 @@ export class News extends Component {
 
     async updateNews() {
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=7608679f9040436dafc3a40f2c9c4f6c&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-        this.setState({ loading: true }); //loading ko true karte uske saath saath
-        let data = await fetch(url); //Phir uska intzar karte ha
-        let parsedData = await data.json()//Phir Json m convert hona k intzar karte ha
-        console.log(parsedData);  //Uska baad yeah state set kar
+        this.setState({ loading: true });
+        let data = await fetch(url); 
+        let parsedData = await data.json()
+        console.log(parsedData);
         this.setState({
             articles: parsedData.articles,
             totalResults: parsedData.totalResults,
@@ -62,8 +62,9 @@ export class News extends Component {
         return (
             <div className="container my-3">
                 <h1 className="text-center" style={{ margin: '35px 0px' }}>NewsHub - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1>
-                {this.state.loading && <Spinner />} {/* Iska matlb h if this.state.loding true h spinner dikha do otherwise nahi */}
+                {/* {this.state.loading && <Spinner />}  */}
                 <div className="row">
+                    {/* iska mtlb h agar loading nhai chal rhai h (&&-mean true) tohh news dikhao or agar loding chl rhai h tohh spinner */}
                     {!this.state.loading && this.state.articles.map((element) => {
                         return <div className="col-md-4" key={element.url}>
                             <NewsItem title={element.title ? element.title : ""} description={element.description ? element.description : ""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />
